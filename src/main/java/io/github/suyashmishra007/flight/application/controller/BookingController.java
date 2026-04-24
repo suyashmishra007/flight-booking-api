@@ -2,13 +2,15 @@ package io.github.suyashmishra007.flight.application.controller;
 
 import io.github.suyashmishra007.flight.application.dto.BookingRequest;
 import io.github.suyashmishra007.flight.application.dto.BookingResponse;
+import io.github.suyashmishra007.flight.application.exception.OverbookingException;
+import io.github.suyashmishra007.flight.application.exception.FlightNotFoundException;
 import io.github.suyashmishra007.flight.application.model.Flight;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.github.suyashmishra007.flight.application.service.FlightService;
 
 import java.util.UUID;
-
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -20,24 +22,20 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request) {
+    public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
 
         Flight flight = flightService.getFlight(request.getFlightNumber());
 
-        // 400: flight not found
         if (flight == null) {
-            return ResponseEntity.badRequest().body("Flight not found");
+            throw new FlightNotFoundException(request.getFlightNumber());
         }
 
-        // Try booking
         boolean booked = flightService.bookSeat(request.getFlightNumber());
 
-        // 409: overbooked
         if (!booked) {
-            return ResponseEntity.status(409).body("Flight is fully booked");
+            throw new OverbookingException(request.getFlightNumber());
         }
 
-        // Success
         UUID bookingId = UUID.randomUUID();
 
         BookingResponse response = new BookingResponse(

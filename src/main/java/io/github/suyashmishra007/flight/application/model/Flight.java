@@ -10,7 +10,6 @@ public class Flight {
         this.totalCapacity = totalCapacity;
         this.bookedSeats = 0;
     }
-
     public String getFlightNumber() { return flightNumber; }
     public int getTotalCapacity() { return totalCapacity; }
     public int getBookedSeats() { return bookedSeats; }
