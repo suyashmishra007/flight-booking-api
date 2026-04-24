@@ -1,5 +1,7 @@
 package io.github.suyashmishra007.flight.application.model;
+import lombok.Data;
 
+@Data
 public class Flight {
     private String flightNumber;
     private int totalCapacity;
@@ -10,10 +12,6 @@ public class Flight {
         this.totalCapacity = totalCapacity;
         this.bookedSeats = 0;
     }
-    public String getFlightNumber() { return flightNumber; }
-    public int getTotalCapacity() { return totalCapacity; }
-    public int getBookedSeats() { return bookedSeats; }
-
     public void incrementBookedSeats() {
         this.bookedSeats++;
     }

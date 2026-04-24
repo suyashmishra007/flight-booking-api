@@ -1,11 +1,11 @@
 package io.github.suyashmishra007.flight.application.service;
 
 import io.github.suyashmishra007.flight.application.model.Flight;
+import org.hibernate.validator.internal.util.stereotypes.ThreadSafe;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 @Service
 public class FlightService {
 
@@ -18,11 +18,14 @@ public class FlightService {
     }
 
     public Flight getFlight(String flightNumber) {
-        return flights.get(flightNumber);
+        if (flightNumber == null) return null;
+        return flights.get(flightNumber.toUpperCase());
     }
 
     public synchronized boolean bookSeat(String flightNumber) {
-        Flight flight = flights.get(flightNumber);
+        if (flightNumber == null) return false;
+
+        Flight flight = flights.get(flightNumber.toUpperCase());
         if (flight == null) return false;
 
         if (flight.getBookedSeats() >= flight.getTotalCapacity()) {
